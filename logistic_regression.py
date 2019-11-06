@@ -19,6 +19,7 @@ class logisticRegressionModel(object):
         self.test = []
         self.val_avg = 0
         self.test_avg = 0 
+        self.estimates = object()
 
         # Data loader
         self.data = pd.read_pickle('data.pkl')
@@ -50,6 +51,7 @@ class logisticRegressionModel(object):
     def logistic_regression(self, xtrain, ytrain, x, y):
         clf = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial').fit(xtrain.astype('int') , ytrain.astype('int') )
         clf.predict(x.astype('int'))
+        self.graph_results(xtrain, clf.predict_proba(xtrain))
         return clf.score(xtrain.astype('int') , ytrain.astype('int') )
 
     def print_results(self):
@@ -59,13 +61,17 @@ class logisticRegressionModel(object):
         print('----------+-----------------------+-------------------')
         
         for i in range(0,self.foldNum):
-            #print(i)
-            #print(len(self.val))
             print ('  ',i +1 ,'     |  ' ,self.val[i],'  |  ',self.test[i])
 
         print('______________________________________________________')
         print('AVG       |  ', self.val_avg, ' |  ', self.test_avg)
         print('______________________________________________________')
+
+    def graph_results(self, x, xLR):
+        plt.plot(x)
+        plt.plot(xLR)
+        plt.ylabel("Probability of Skin")
+        plt.show()
 
 
 if __name__ == '__main__':
